@@ -14,7 +14,7 @@ sample_data = np.array([[1, 2, 3],
                         [31, 32, 33],
                         [34, 35, 36]])
 
-# 求逆
+# 求逆#
 inverse_matrix = np.linalg.pinv(sample_data)
 
 print(inverse_matrix)

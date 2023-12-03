@@ -1,0 +1,48 @@
+import numpy as np
+from scipy.optimize import minimize
+
+# 定义7参数坐标转换函数
+def seven_param_transform(params, x, y):
+    a, b, c, d, e, f, g = params
+    transformed_x = a * x + b * y + c
+    transformed_y = d * x + e * y + f
+    transformed_z = g
+    return transformed_x, transformed_y, transformed_z
+
+# 定义误差函数，用于最小化误差
+def error(params, source_points, target_points):
+    transformed_points = []
+    for source_point in source_points:
+        x, y, z = source_point
+        transformed_x, transformed_y, transformed_z = seven_param_transform(params, x, y)
+        transformed_points.append([transformed_x, transformed_y, transformed_z])
+    error = np.mean((np.array(transformed_points) - np.array(target_points))**2)
+    return error
+
+# 5个公共坐标点示例
+source_points = [
+    [1.0, 2.0, 0.0],
+    [3.0, 4.0, 0.0],
+    [5.0, 6.0, 0.0],
+    [7.0, 8.0, 0.0],
+    [9.0, 10.0, 0.0]
+]
+
+# 目标坐标点示例（经过坐标转换后的期望结果）
+target_points = [
+    [2.0, 3.0, 0.0],
+    [4.0, 5.0, 0.0],
+    [6.0, 7.0, 0.0],
+    [8.0, 9.0, 0.0],
+    [10.0, 11.0, 0.0]
+]
+
+# 初始参数猜测
+initial_params = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+
+# 最小化误差，找到最优参数
+result = minimize(error, initial_params, args=(source_points, target_points), method='Nelder-Mead')
+
+# 输出最优参数
+optimal_params = result.x
+print("最优参数:", optimal_params)
